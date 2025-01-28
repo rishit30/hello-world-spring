@@ -1,0 +1,35 @@
+name: Deploy to ECS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Build and Deploy to ECS
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Log in to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, Tag, and Push Docker Image
+        run: |
+          IMAGE_NAME=testing-app
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <your-account-id>.dkr.ecr.us-east-1.amazonaws.com
+          docker build -t $IMAGE_NAME .
+          docker tag $IMAGE_NAME:latest <your-account-id>.dkr.ecr.us-east-1.amazonaws.com/$IMAGE_NAME:latest
+          docker push <your-account-id>.dkr.ecr.us-east-1.amazonaws.com/$IMAGE_NAME:latest
+
+      - name: Deploy to ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ecs-task-definition.json
+          service: testing-app-service
+          cluster: testing-app-cluster
+          wait-for-service-stability: true
