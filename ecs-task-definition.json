@@ -4,11 +4,11 @@
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "256",
   "memory": "512",
-  "executionRoleArn": "arn:aws:iam::<your-account-id>:role/testing-app-ecs-execution-role",
+  "executionRoleArn": "arn:aws:iam::337909741523:role/testing-app-ecs-execution-role",
   "containerDefinitions": [
     {
       "name": "testing-app-container",
-      "image": "<your-account-id>.dkr.ecr.us-east-1.amazonaws.com/testing-app:latest",
+      "image": "337909741523.dkr.ecr.us-east-1.amazonaws.com/testing-app:latest",
       "portMappings": [
         {
           "containerPort": 8080,
